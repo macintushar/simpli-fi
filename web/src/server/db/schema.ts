@@ -10,13 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { type AdapterAccount } from "next-auth/adapters";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTableCreator((name) => `web_${name}`);
+export const createTable = pgTableCreator((name) => `simpli-fi_${name}`);
 
 export const posts = createTable(
   "post",
@@ -30,13 +24,13 @@ export const posts = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
+      () => new Date(),
     ),
   },
   (example) => ({
     createdByIdIdx: index("created_by_idx").on(example.createdById),
     nameIndex: index("name_idx").on(example.name),
-  })
+  }),
 );
 
 export const users = createTable("user", {
@@ -83,7 +77,7 @@ export const accounts = createTable(
       columns: [account.provider, account.providerAccountId],
     }),
     userIdIdx: index("account_user_id_idx").on(account.userId),
-  })
+  }),
 );
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -106,7 +100,7 @@ export const sessions = createTable(
   },
   (session) => ({
     userIdIdx: index("session_user_id_idx").on(session.userId),
-  })
+  }),
 );
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -125,5 +119,118 @@ export const verificationTokens = createTable(
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  })
+  }),
 );
+
+export const groups = createTable(
+  "group",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    name: varchar("name", { length: 100 }).notNull(),
+    description: text("description"),
+    createdById: varchar("created_by", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (group) => ({
+    createdByUserIdIdx: index("group_created_by_idx").on(group.createdById),
+  }),
+);
+
+export const groupMemberships = createTable(
+  "group_membership",
+  {
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    groupId: integer("group_id")
+      .notNull()
+      .references(() => groups.id),
+    joinedAt: timestamp("joined_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (membership) => ({
+    primaryKey: primaryKey({
+      columns: [membership.userId, membership.groupId],
+    }),
+    userIdIdx: index("group_membership_user_id_idx").on(membership.userId),
+    groupIdIdx: index("group_membership_group_id_idx").on(membership.groupId),
+  }),
+);
+
+export const expenses = createTable(
+  "expense",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    groupId: integer("group_id")
+      .notNull()
+      .references(() => groups.id),
+    amount: integer("amount").notNull(),
+    description: text("description"),
+    paidById: varchar("paid_by", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (expense) => ({
+    groupIdIdx: index("expense_group_id_idx").on(expense.groupId),
+    paidByIdIdx: index("expense_paid_by_id_idx").on(expense.paidById),
+  }),
+);
+
+export const balances = createTable(
+  "balance",
+  {
+    groupId: integer("group_id")
+      .notNull()
+      .references(() => groups.id),
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    balance: integer("balance").default(0).notNull(), // Negative means owed, positive means credit
+  },
+  (balance) => ({
+    primaryKey: primaryKey({ columns: [balance.groupId, balance.userId] }),
+    groupIdIdx: index("balance_group_id_idx").on(balance.groupId),
+    userIdIdx: index("balance_user_id_idx").on(balance.userId),
+  }),
+);
+
+export const groupsRelations = relations(groups, ({ one, many }) => ({
+  createdBy: one(users, {
+    fields: [groups.createdById],
+    references: [users.id],
+  }),
+  members: many(groupMemberships),
+  expenses: many(expenses),
+}));
+
+export const groupMembershipsRelations = relations(
+  groupMemberships,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [groupMemberships.userId],
+      references: [users.id],
+    }),
+    group: one(groups, {
+      fields: [groupMemberships.groupId],
+      references: [groups.id],
+    }),
+  }),
+);
+
+export const balancesRelations = relations(balances, ({ one }) => ({
+  group: one(groups, { fields: [balances.groupId], references: [groups.id] }),
+  user: one(users, { fields: [balances.userId], references: [users.id] }),
+}));
+
+export const expensesRelations = relations(expenses, ({ one }) => ({
+  group: one(groups, { fields: [expenses.groupId], references: [groups.id] }),
+  paidBy: one(users, { fields: [expenses.paidById], references: [users.id] }),
+}));

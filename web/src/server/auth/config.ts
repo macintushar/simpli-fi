@@ -9,6 +9,8 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import Auth0 from "next-auth/providers/auth0";
+import { env } from "@/env";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -38,7 +40,11 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    DiscordProvider,
+    Auth0({
+      clientId: env.AUTH0_CLIENT_ID,
+      clientSecret: env.AUTH0_CLIENT_SECRET,
+      issuer: env.AUTH0_CLIENT_ISSUER,
+    }),
     /**
      * ...add more providers here.
      *
