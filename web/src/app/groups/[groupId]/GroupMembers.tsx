@@ -49,8 +49,8 @@ export default async function GroupMembers({ groupId }: GroupMembersProps) {
           {membersData.map((member) => (
             <MemberItem
               key={member.group_membership.userId}
-              name={member.user?.name || "User"}
-              image={member.user?.image || ""}
+              name={member.user?.name ?? "User"}
+              image={member.user?.image ?? ""}
               totalSpent={100}
               totalBalance={1000}
             />

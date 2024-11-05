@@ -2,7 +2,7 @@ import TitleBar from "@/components/TitleBar";
 import { api } from "@/trpc/server";
 import CreateGroupDialog from "./CreateGroupDialog";
 import GroupsTable from "./GroupsTable";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 export default async function GroupsPage() {
   const groups = await api.group.getGroups();

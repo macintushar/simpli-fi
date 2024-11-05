@@ -26,7 +26,7 @@ export default async function GroupPage({
         subtitle={`Created by ${groupData[0]?.group?.createdById}`}
         extra={
           <AddGroupExpenseDialog
-            groupName={groupData[0]?.group?.name || "your group"}
+            groupName={groupData[0]?.group?.name ?? "your group"}
           />
         }
       />

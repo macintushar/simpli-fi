@@ -1,8 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/DataTable";
-import { Button } from "@/components/ui/button";
-import { ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { useRouter } from "next/navigation";
 
 type Groups = {

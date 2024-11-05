@@ -35,14 +35,12 @@ export const groupRouter = createTRPCRouter({
         })
         .returning();
 
-      if (groupData && groupData[0]) {
-        const membershipData = await ctx.db.insert(groupMemberships).values({
-          userId: ctx.session.user.id,
-          groupId: groupData[0].id,
-        });
-      }
+      const membershipData = await ctx.db.insert(groupMemberships).values({
+        userId: ctx.session.user.id,
+        groupId: groupData[0]?.id ?? 0,
+      });
 
-      return groupData;
+      return membershipData;
     }),
 
   getGroups: protectedProcedure.query(async ({ ctx }) => {

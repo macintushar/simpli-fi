@@ -17,14 +17,6 @@ import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-interface ProfileProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}
-
 export default async function Profile() {
   const session = await auth();
   if (!session?.user) {
@@ -41,8 +33,8 @@ export default async function Profile() {
             <div className="flex items-center gap-1.5">
               <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage
-                  src={session?.user?.image || ""}
-                  alt={session?.user?.name || "Name"}
+                  src={session?.user?.image ?? ""}
+                  alt={session?.user?.name ?? "Name"}
                 />
                 <AvatarFallback className="rounded-full">
                   <User className="h-4 w-4" />
@@ -50,10 +42,10 @@ export default async function Profile() {
               </Avatar>
               <div className="flex flex-col items-start text-left">
                 <span className="truncate text-sm font-semibold leading-none">
-                  {session?.user?.name || "Name"}
+                  {session?.user?.name ?? "Name"}
                 </span>
                 <span className="text-sidebar-foreground/70 mt-1 truncate text-xs leading-none">
-                  {session?.user?.email || "mac@email.com"}
+                  {session?.user?.email ?? "mac@email.com"}
                 </span>
               </div>
               <ChevronsUpDown className="mx-auto size-4" />
@@ -64,10 +56,10 @@ export default async function Profile() {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">
-                {session?.user?.name || "Name"}
+                {session?.user?.name ?? "Name"}
               </p>
               <p className="text-muted-foreground text-xs leading-none">
-                {session?.user?.email || "mac@email.com"}
+                {session?.user?.email ?? "mac@email.com"}
               </p>
             </div>
           </DropdownMenuLabel>
