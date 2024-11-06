@@ -14,7 +14,8 @@ import Profile from "./Profile";
 
 import Logo from "@/assets/logo";
 import { Home, Users } from "lucide-react";
-import Link from "next/link";
+
+import NavItem from "./NavItem";
 
 const menuItems = [
   { name: "Home", url: "/", icon: <Home /> },
@@ -36,12 +37,11 @@ export default function AppSidebar() {
             <SidebarMenu>
               {menuItems.map((menuItem) => (
                 <SidebarMenuItem key={menuItem.name}>
-                  <SidebarMenuButton asChild>
-                    <Link href={menuItem.url}>
-                      {menuItem.icon}
-                      <span>{menuItem.name}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  <NavItem
+                    name={menuItem.name}
+                    url={menuItem.url}
+                    icon={menuItem.icon}
+                  />
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

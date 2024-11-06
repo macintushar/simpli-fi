@@ -9,7 +9,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/Sidebar/Sidebar";
 
 import { ThemeProvider } from "@/components/ThemeProvider";
-
+import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "Simpli-Fi",
   description: "The simplest finance app for all your group transactions.",
@@ -43,6 +43,7 @@ export default function RootLayout({
               </main>
             </SidebarProvider>
           </ThemeProvider>
+          {/* <Toaster /> */}
         </body>
       </TRPCReactProvider>
     </html>

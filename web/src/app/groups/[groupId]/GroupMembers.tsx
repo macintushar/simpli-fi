@@ -1,7 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { api } from "@/trpc/server";
+import AddMemeberDialog from "./AddMemberDialog";
+import AvatarPicture from "@/components/AvatarPicture";
 
 type GroupMembersProps = {
   groupId: number;
@@ -21,10 +30,7 @@ function MemberItem({
   return (
     <div className="flex items-center justify-between gap-1">
       <div className="flex items-center gap-2">
-        <Avatar className="h-8 w-8 rounded-full">
-          <AvatarImage src={image} alt={name} />
-          <AvatarFallback className="rounded-full" />
-        </Avatar>
+        <AvatarPicture src={image} alt={name} />
         <div className="flex flex-col">
           <p className="text-sm font-medium">{name}</p>
           <p className="text-xs font-light">
@@ -40,9 +46,9 @@ function MemberItem({
 export default async function GroupMembers({ groupId }: GroupMembersProps) {
   const membersData = await api.group.getMembers({ id: groupId });
   return (
-    <Card className="h-fit w-[300px]">
+    <Card className="h-fit max-h-screen w-[300px] overflow-clip">
       <CardHeader>
-        <h1 className="text-xl font-semibold">Members</h1>
+        <CardTitle>Members</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
@@ -57,6 +63,9 @@ export default async function GroupMembers({ groupId }: GroupMembersProps) {
           ))}
         </div>
       </CardContent>
+      <CardFooter>
+        <AddMemeberDialog groupId={groupId} />
+      </CardFooter>
     </Card>
   );
 }

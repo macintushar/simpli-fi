@@ -1,8 +1,11 @@
 "use client";
 
 import { DataTable } from "@/components/DataTable";
+import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 type Groups = {
   group: {
@@ -36,7 +39,28 @@ const GroupsTableColumns: ColumnDef<Groups>[] = [
     accessorKey: "group.createdAt",
     cell: ({ getValue }) => {
       const date = getValue() as Date;
-      return date.toLocaleDateString();
+      return <h1>{dayjs(date).format("DD/MM/YYYY")}</h1>;
+    },
+  },
+  {
+    accessorKey: "group_membership.joinedAt",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center gap-1 font-semibold">
+          Joined On
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ getValue }) => {
+      const date = getValue() as Date;
+      return <h1>{dayjs(date).format("DD/MM/YYYY [at] hh:mm A")}</h1>;
     },
   },
 ];

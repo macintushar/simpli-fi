@@ -1,29 +1,10 @@
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "@/server/api/trpc";
-import { posts, groups, groupMemberships, users } from "@/server/db/schema";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { groups, groupMemberships, users, expenses } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const groupRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return {
-      greeting: `Groups`,
-    };
-  }),
-
-  create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
-        name: input.name,
-        createdById: ctx.session.user.id,
-      });
-    }),
-
   createGroup: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -81,7 +62,17 @@ export const groupRouter = createTRPCRouter({
       return groupData ?? null;
     }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+  getExpenses: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const groupData = await ctx.db
+        .select()
+        .from(expenses)
+        .leftJoin(users, eq(expenses.paidById, users.id))
+        .where(eq(expenses.groupId, input.id));
+
+      console.log(groupData, ctx.session.user.id);
+
+      return groupData ?? null;
+    }),
 });

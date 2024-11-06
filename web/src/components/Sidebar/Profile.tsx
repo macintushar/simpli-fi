@@ -16,6 +16,7 @@ import { auth } from "@/server/auth";
 
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import AvatarPicture from "../AvatarPicture";
 
 export default async function Profile() {
   const session = await auth();
@@ -28,23 +29,18 @@ export default async function Profile() {
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton
             size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground w-full justify-between"
+            className="w-full justify-between data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <div className="flex items-center gap-1.5">
-              <Avatar className="h-8 w-8 rounded-full">
-                <AvatarImage
-                  src={session?.user?.image ?? ""}
-                  alt={session?.user?.name ?? "Name"}
-                />
-                <AvatarFallback className="rounded-full">
-                  <User className="h-4 w-4" />
-                </AvatarFallback>
-              </Avatar>
+              <AvatarPicture
+                src={session?.user?.image ?? ""}
+                alt={session?.user?.name ?? "Name"}
+              />
               <div className="flex flex-col items-start text-left">
                 <span className="truncate text-sm font-semibold leading-none">
                   {session?.user?.name ?? "Name"}
                 </span>
-                <span className="text-sidebar-foreground/70 mt-1 truncate text-xs leading-none">
+                <span className="mt-1 truncate text-xs leading-none text-sidebar-foreground/70">
                   {session?.user?.email ?? "mac@email.com"}
                 </span>
               </div>
