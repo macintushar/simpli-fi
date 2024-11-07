@@ -24,7 +24,7 @@ import { addExpenseSchema } from "@/server/api/routers/schemas";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { z } from "zod";
+import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { addExpense } from "./actions";
@@ -66,7 +66,7 @@ export default function AddGroupExpenseDialog({
       values.description,
     );
 
-    if (expense && expense[0]?.id) {
+    if (expense?.[0]?.id) {
       toast({
         title: `Added expense to ${groupName}.`,
         description: `Expense of ${values.amount} has been added to ${groupName}.`,
