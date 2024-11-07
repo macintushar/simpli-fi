@@ -68,8 +68,8 @@ export default function AddGroupExpenseDialog({
 
     if (expense && expense[0]?.id) {
       toast({
-        title: "Expense Added",
-        description: `Expense of ${values.amount} has been added to the ${groupName}.`,
+        title: `Added expense to ${groupName}.`,
+        description: `Expense of ${values.amount} has been added to ${groupName}.`,
       });
       setIsExpenseSubmitting(false);
       setOpen(false);
@@ -136,7 +136,13 @@ export default function AddGroupExpenseDialog({
               >
                 Cancel
               </Button>
-              <Button variant="default" size="default" type="submit">
+              <Button
+                variant="default"
+                size="default"
+                type="submit"
+                isLoading={isExpenseSubmitting}
+                loadingText="Adding Expense..."
+              >
                 Add to Group
               </Button>
             </DialogFooter>
