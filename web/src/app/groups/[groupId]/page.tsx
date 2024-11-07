@@ -31,7 +31,6 @@ export default async function GroupPage({
   }
 
   const groupData = await api.group.getGroup({ id: parseInt(groupId) });
-
   return (
     <div className="flex h-full max-h-screen flex-col gap-4">
       <TitleBar
@@ -44,10 +43,10 @@ export default async function GroupPage({
           />
         }
       />
-      <div className="flex h-full max-h-full flex-col justify-between sm:flex-row">
-        <div className="flex h-full w-full flex-col space-y-2 sm:space-y-4">
-          <div className="flex flex-wrap justify-between space-y-2 sm:space-y-0">
-            <Card className="h-fit w-[300px]">
+      <div className="flex h-full max-h-full flex-col justify-between gap-0 space-y-2 sm:flex-row sm:gap-4 sm:space-y-0">
+        <div className="flex h-full w-full flex-col space-y-2 sm:w-2/3 sm:space-y-4">
+          <div className="flex flex-col justify-between space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+            <Card className="h-fit w-full">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Total Spent</CardTitle>
                 <ArrowLeftRight className="h-4 w-4" />
@@ -57,7 +56,7 @@ export default async function GroupPage({
               </CardContent>
             </Card>
 
-            <Card className="h-fit w-[300px]">
+            <Card className="h-fit w-full">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Total Owed</CardTitle>
                 <ArrowRightLeft className="h-4 w-4" />

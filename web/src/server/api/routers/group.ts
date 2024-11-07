@@ -43,8 +43,6 @@ export const groupRouter = createTRPCRouter({
         .leftJoin(groupMemberships, eq(groups.id, groupMemberships.groupId))
         .where(eq(groups.id, input.id));
 
-      console.log(groupData, ctx.session.user.id);
-
       return groupData ?? null;
     }),
 
@@ -57,8 +55,6 @@ export const groupRouter = createTRPCRouter({
         .leftJoin(users, eq(groupMemberships.userId, users.id))
         .where(eq(groupMemberships.groupId, input.id));
 
-      console.log(groupData, ctx.session.user.id);
-
       return groupData ?? null;
     }),
 
@@ -70,8 +66,6 @@ export const groupRouter = createTRPCRouter({
         .from(expenses)
         .leftJoin(users, eq(expenses.paidById, users.id))
         .where(eq(expenses.groupId, input.id));
-
-      console.log(groupData, ctx.session.user.id);
 
       return groupData ?? null;
     }),

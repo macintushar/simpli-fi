@@ -202,6 +202,31 @@ export const balances = createTable(
   }),
 );
 
+export const payments = createTable(
+  "payment",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    groupId: integer("group_id")
+      .notNull()
+      .references(() => groups.id),
+    fromUserId: varchar("from_user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    toUserId: varchar("to_user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    amount: integer("amount").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (payment) => ({
+    groupIdIdx: index("payment_group_id_idx").on(payment.groupId),
+    fromUserIdIdx: index("payment_from_user_id_idx").on(payment.fromUserId),
+    toUserIdIdx: index("payment_to_user_id_idx").on(payment.toUserId),
+  }),
+);
+
 export const groupsRelations = relations(groups, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [groups.createdById],
@@ -233,4 +258,19 @@ export const balancesRelations = relations(balances, ({ one }) => ({
 export const expensesRelations = relations(expenses, ({ one }) => ({
   group: one(groups, { fields: [expenses.groupId], references: [groups.id] }),
   paidBy: one(users, { fields: [expenses.paidById], references: [users.id] }),
+}));
+
+export const paymentsRelations = relations(payments, ({ one }) => ({
+  group: one(groups, {
+    fields: [payments.groupId],
+    references: [groups.id],
+  }),
+  fromUser: one(users, {
+    fields: [payments.fromUserId],
+    references: [users.id],
+  }),
+  toUser: one(users, {
+    fields: [payments.toUserId],
+    references: [users.id],
+  }),
 }));

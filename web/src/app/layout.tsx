@@ -35,15 +35,17 @@ export default function RootLayout({
           >
             <SidebarProvider>
               <AppSidebar />
-              <div className="my-auto h-full w-fit">
-                <SidebarTrigger />
+              <div className="flex w-full flex-col sm:flex-row">
+                <div className="my-auto h-fit w-fit sm:h-full">
+                  <SidebarTrigger />
+                </div>
+                <main className="flex w-full px-4 py-2">
+                  <div className="w-full">{children}</div>
+                </main>
               </div>
-              <main className="flex w-full px-4 py-2">
-                <div className="w-full">{children}</div>
-              </main>
             </SidebarProvider>
           </ThemeProvider>
-          {/* <Toaster /> */}
+          <Toaster />
         </body>
       </TRPCReactProvider>
     </html>

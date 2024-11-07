@@ -21,53 +21,60 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { addExpenseSchema } from "@/server/api/routers/schemas";
-import { api } from "@/trpc/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { auth } from "@/server/auth";
-// import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { addExpense } from "./actions";
 
 type AddGroupExpenseDialogProps = {
   groupName: string;
   groupId: number;
 };
 
+const expenseFormSchema = addExpenseSchema.pick({
+  amount: true,
+  description: true,
+});
+
+type ExpenseFormSchema = z.infer<typeof expenseFormSchema>;
+
 export default function AddGroupExpenseDialog({
   groupName,
   groupId,
 }: AddGroupExpenseDialogProps) {
   const [open, setOpen] = useState(false);
-  // const { toast } = useToast();
+  const [isExpenseSubmitting, setIsExpenseSubmitting] = useState(false);
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof addExpenseSchema>>({
-    resolver: zodResolver(addExpenseSchema),
+  const form = useForm<ExpenseFormSchema>({
+    resolver: zodResolver(expenseFormSchema),
     defaultValues: {
-      amount: 0,
+      amount: "0",
       description: "",
     },
   });
 
-  async function handleAddExpense(
-    values: Omit<Omit<z.infer<typeof addExpenseSchema>, "groupId">, "paidById">,
-  ) {
-    const addExpense = api.expense.addExpense.useMutation();
-    const session = await auth();
+  async function handleAddExpense(values: ExpenseFormSchema) {
+    setIsExpenseSubmitting(true);
 
-    if (session?.user) {
-      await addExpense.mutateAsync({
-        groupId: groupId,
-        amount: values.amount,
-        description: values.description,
-        paidById: session?.user.id,
+    const expense = await addExpense(
+      groupId,
+      values.amount,
+      values.description,
+    );
+
+    if (expense && expense[0]?.id) {
+      toast({
+        title: "Expense Added",
+        description: `Expense of ${values.amount} has been added to the ${groupName}.`,
       });
-      // toast({
-      //   title: "Expense Added",
-      //   description: `Expense of ${values.amount} has been added to the ${groupName}.`,
-      // });
+      setIsExpenseSubmitting(false);
+      setOpen(false);
     }
+    setIsExpenseSubmitting(false);
   }
 
   return (
@@ -129,12 +136,7 @@ export default function AddGroupExpenseDialog({
               >
                 Cancel
               </Button>
-              <Button
-                variant="default"
-                size="lg"
-                type="submit"
-                // onClick={() => setOpen(false)}
-              >
+              <Button variant="default" size="default" type="submit">
                 Add to Group
               </Button>
             </DialogFooter>

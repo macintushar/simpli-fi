@@ -1,5 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -46,7 +44,7 @@ function MemberItem({
 export default async function GroupMembers({ groupId }: GroupMembersProps) {
   const membersData = await api.group.getMembers({ id: groupId });
   return (
-    <Card className="h-fit max-h-screen w-[300px] overflow-clip">
+    <Card className="h-fit max-h-screen w-full overflow-clip sm:w-1/3">
       <CardHeader>
         <CardTitle>Members</CardTitle>
       </CardHeader>

@@ -13,7 +13,6 @@ type NavItemProps = {
 
 export default function NavItem({ name, url, icon }: NavItemProps) {
   const path = usePathname();
-  console.log(path);
 
   return (
     <SidebarMenuButton isActive={path === url} asChild>

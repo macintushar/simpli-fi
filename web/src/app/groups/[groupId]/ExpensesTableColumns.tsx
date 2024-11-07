@@ -1,6 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { type ColumnDef } from "@tanstack/react-table";
+import dayjs from "dayjs";
+import { ArrowUpDown } from "lucide-react";
 
 type Expense = {
   user: {
@@ -22,20 +25,37 @@ type Expense = {
 
 const ExpensesTableColumns: ColumnDef<Expense>[] = [
   {
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center gap-1 font-semibold">
+          Added On
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="h-4 w-4" />
+          </Button>
+        </div>
+      );
+    },
+    accessorKey: "expense.createdAt",
+    cell: ({ getValue }) => {
+      const date = getValue() as Date;
+      return <h1>{dayjs(date).format("DD/MM/YYYY [at] hh:mm A")}</h1>;
+    },
+  },
+  {
     header: "Description",
     accessorKey: "expense.description",
   },
   {
-    header: "Created By",
-    accessorKey: "user.name",
+    header: "Amount",
+    accessorKey: "expense.amount",
   },
   {
-    header: "Created At",
-    accessorKey: "expense.createdAt",
-    cell: ({ getValue }) => {
-      const date = getValue() as Date;
-      return date.toLocaleDateString();
-    },
+    header: "Created By",
+    accessorKey: "user.name",
   },
 ];
 
