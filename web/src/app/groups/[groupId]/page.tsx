@@ -10,8 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeftRight, ArrowRightLeft, Loader } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ArrowRightLeft,
+  Loader,
+  RefreshCcw,
+} from "lucide-react";
 import TransactionsTable from "./TransactionsTable";
+import { Button } from "@/components/ui/button";
 
 export default async function GroupPage({
   params,
@@ -22,12 +28,14 @@ export default async function GroupPage({
 
   const session = await auth();
 
-  if (!session?.user) {
-    return <div>You need to be logged in to view this page.</div>;
+  if (session?.user) {
+    void api.group.getGroup.prefetch({ id: parseInt(groupId) });
+    void api.group.getMembers.prefetch({ id: parseInt(groupId) });
+    void api.group.getExpenses.prefetch({ id: parseInt(groupId) });
   }
 
   if (!groupId) {
-    <Loader />;
+    return <Loader />;
   }
 
   const groupData = await api.group.getGroup({ id: parseInt(groupId) });
@@ -67,22 +75,29 @@ export default async function GroupPage({
             </Card>
           </div>
           <Card>
-            <CardHeader>
-              <CardTitle>Expenses</CardTitle>
-              <CardDescription>
-                All expenses added to{" "}
-                <span className="font-semibold text-neutral-900 dark:text-neutral-300">
-                  {groupData[0]?.group?.name}
-                </span>
-                .
-              </CardDescription>
+            <CardHeader className="flex flex-row justify-between">
+              <div className="flex flex-col">
+                <CardTitle>Expenses</CardTitle>
+                <CardDescription>
+                  All expenses added to{" "}
+                  <span className="font-semibold text-neutral-900 dark:text-neutral-300">
+                    {groupData[0]?.group?.name}
+                  </span>
+                  .
+                </CardDescription>
+              </div>
+              <Button variant="ghost" size="icon">
+                <RefreshCcw className="h-4 w-4" />
+              </Button>
             </CardHeader>
             <CardContent>
-              <TransactionsTable groupId={parseInt(groupId)} />
+              {session?.user && (
+                <TransactionsTable groupId={parseInt(groupId)} />
+              )}
             </CardContent>
           </Card>
         </div>
-        <GroupMembers groupId={parseInt(groupId)} />
+        {session?.user && <GroupMembers groupId={parseInt(groupId)} />}
       </div>
     </div>
   );

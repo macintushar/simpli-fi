@@ -3,7 +3,7 @@
 import {
   type ColumnDef,
   flexRender,
-  SortingState,
+  type SortingState,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,

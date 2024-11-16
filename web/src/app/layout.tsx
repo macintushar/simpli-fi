@@ -36,7 +36,7 @@ export default function RootLayout({
             <SidebarProvider>
               <AppSidebar />
               <div className="flex w-full flex-col sm:flex-row">
-                <div className="my-auto h-fit w-fit sm:h-full">
+                <div className="flex h-fit w-fit items-center sm:h-full">
                   <SidebarTrigger />
                 </div>
                 <main className="flex w-full px-4 py-2">

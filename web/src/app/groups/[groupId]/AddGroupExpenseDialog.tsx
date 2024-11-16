@@ -28,6 +28,7 @@ import { type z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { addExpense } from "./actions";
+import { api } from "@/trpc/react";
 
 type AddGroupExpenseDialogProps = {
   groupName: string;
@@ -48,6 +49,7 @@ export default function AddGroupExpenseDialog({
   const [open, setOpen] = useState(false);
   const [isExpenseSubmitting, setIsExpenseSubmitting] = useState(false);
   const { toast } = useToast();
+  const utils = api.useUtils();
 
   const form = useForm<ExpenseFormSchema>({
     resolver: zodResolver(expenseFormSchema),
@@ -72,6 +74,7 @@ export default function AddGroupExpenseDialog({
         description: `Expense of ${values.amount} has been added to ${groupName}.`,
       });
       setIsExpenseSubmitting(false);
+      await utils.group.getExpenses.invalidate({ id: groupId });
       setOpen(false);
     }
     setIsExpenseSubmitting(false);

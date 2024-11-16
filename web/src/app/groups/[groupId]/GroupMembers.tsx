@@ -1,3 +1,4 @@
+"use client";
 import {
   Card,
   CardContent,
@@ -6,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
 import AddMemeberDialog from "./AddMemberDialog";
 import AvatarPicture from "@/components/AvatarPicture";
 
@@ -41,8 +42,8 @@ function MemberItem({
   );
 }
 
-export default async function GroupMembers({ groupId }: GroupMembersProps) {
-  const membersData = await api.group.getMembers({ id: groupId });
+export default function GroupMembers({ groupId }: GroupMembersProps) {
+  const membersData = api.group.getMembers.useSuspenseQuery({ id: groupId });
   return (
     <Card className="h-fit max-h-screen w-full overflow-clip sm:w-1/3">
       <CardHeader>
@@ -50,7 +51,7 @@ export default async function GroupMembers({ groupId }: GroupMembersProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
-          {membersData.map((member) => (
+          {membersData[0].map((member) => (
             <MemberItem
               key={member.group_membership.userId}
               name={member.user?.name ?? "User"}

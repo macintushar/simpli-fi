@@ -6,6 +6,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import { api } from "@/trpc/react";
 
 type Groups = {
   group: {
@@ -65,13 +66,14 @@ const GroupsTableColumns: ColumnDef<Groups>[] = [
   },
 ];
 
-export default function GroupsTable({ data }: { data: Groups[] }) {
+export default function GroupsTable() {
   const router = useRouter();
+  const groups = api.group.getGroups.useSuspenseQuery();
 
   return (
     <DataTable
       columns={GroupsTableColumns}
-      data={data}
+      data={groups[0]}
       onRowClick={(row) => router.push(`/groups/${row.group.id}`)}
     />
   );
