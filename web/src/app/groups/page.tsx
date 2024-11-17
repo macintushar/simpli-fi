@@ -15,7 +15,9 @@ export default async function GroupsPage() {
   return (
     <div className="flex flex-col gap-4">
       <TitleBar title={`Groups`} extra={<CreateGroupDialog />} />
-      <Card className="h-fit p-2">{session?.user && <GroupsTable />}</Card>
+      <Card className="h-fit p-2">
+        {session?.user && <GroupsTable currentUser={session.user} />}
+      </Card>
     </div>
   );
 }
