@@ -45,10 +45,13 @@ export default async function GroupPage({
         title={`Group / ${groupData[0]?.group?.name}`}
         subtitle={`Created by ${groupData[0]?.group?.createdById}`}
         extra={
-          <AddGroupExpenseDialog
-            groupName={groupData[0]?.group?.name ?? "your group"}
-            groupId={parseInt(groupId)}
-          />
+          session?.user && (
+            <AddGroupExpenseDialog
+              groupName={groupData[0]?.group?.name ?? "your group"}
+              groupId={parseInt(groupId)}
+              currentUser={session?.user}
+            />
+          )
         }
       />
       <div className="flex h-full max-h-full flex-col justify-between gap-0 space-y-2 sm:flex-row sm:gap-4 sm:space-y-0">
@@ -75,24 +78,22 @@ export default async function GroupPage({
             </Card>
           </div>
           <Card>
-            <CardHeader className="flex flex-row justify-between">
-              <div className="flex flex-col">
-                <CardTitle>Expenses</CardTitle>
-                <CardDescription>
-                  All expenses added to{" "}
-                  <span className="font-semibold text-neutral-900 dark:text-neutral-300">
-                    {groupData[0]?.group?.name}
-                  </span>
-                  .
-                </CardDescription>
-              </div>
-              <Button variant="ghost" size="icon">
-                <RefreshCcw className="h-4 w-4" />
-              </Button>
+            <CardHeader>
+              <CardTitle>Expenses</CardTitle>
+              <CardDescription>
+                All expenses added to{" "}
+                <span className="font-semibold text-neutral-900 dark:text-neutral-300">
+                  {groupData[0]?.group?.name}
+                </span>
+                .
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {session?.user && (
-                <TransactionsTable groupId={parseInt(groupId)} />
+                <TransactionsTable
+                  groupId={parseInt(groupId)}
+                  currentUser={session.user}
+                />
               )}
             </CardContent>
           </Card>

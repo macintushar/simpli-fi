@@ -7,4 +7,9 @@ export const addExpenseSchema = z.object({
   }),
   description: z.string().min(1),
   paidById: z.string(),
+  splitWithUserId: z.array(z.string()),
+});
+
+export const createGroupSchema = z.object({
+  name: z.string().min(1),
 });

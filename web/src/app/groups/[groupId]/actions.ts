@@ -7,6 +7,7 @@ export async function addExpense(
   groupId: number,
   amount: string,
   description: string,
+  splitWithUserId: string[],
 ) {
   const session = await auth();
 
@@ -16,6 +17,7 @@ export async function addExpense(
       amount: amount,
       description: description,
       paidById: session.user.id,
+      splitWithUserId: splitWithUserId,
     });
     return addExpense;
   }
