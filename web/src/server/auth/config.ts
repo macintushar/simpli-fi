@@ -8,7 +8,8 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
-import Auth0 from "next-auth/providers/auth0";
+// import Auth0 from "next-auth/providers/auth0";
+import Google from "next-auth/providers/google";
 import { env } from "@/env";
 
 /**
@@ -39,10 +40,14 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    Auth0({
-      clientId: env.AUTH0_CLIENT_ID,
-      clientSecret: env.AUTH0_CLIENT_SECRET,
-      issuer: env.AUTH0_CLIENT_ISSUER,
+    // Auth0({
+    //   clientId: env.AUTH0_CLIENT_ID,
+    //   clientSecret: env.AUTH0_CLIENT_SECRET,
+    //   issuer: env.AUTH0_CLIENT_ISSUER,
+    // }),
+    Google({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here.
